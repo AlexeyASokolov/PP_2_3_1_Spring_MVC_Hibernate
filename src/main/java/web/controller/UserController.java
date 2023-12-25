@@ -1,16 +1,14 @@
 package web.controller;
 
+import web.model.User;
+import web.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import web.model.User;
-import web.service.UserService;
 
 @Controller
-@RequestMapping()
 public class UserController {
-
     private final UserService userService;
 
     @Autowired
@@ -18,38 +16,38 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/")
-    public String getUsers(Model model) {
+    @GetMapping("/users")
+    public String getAllUsers(Model model) {
         model.addAttribute("users", userService.getAllUsers());
         return "users";
     }
-    @GetMapping("/new")
-    public String getCreateNewUserForm(Model model) {
-        model.addAttribute(new User());
-        return "new_user";
-    }
 
-    @PostMapping("/")
+    @PostMapping("/userCreate")
     public String addUser(@ModelAttribute("user") User user) {
         userService.addUser(user);
-        return "redirect:/";
+        return "redirect:/users";
     }
 
-    @RequestMapping("/removeUser")
-    public String removeUser(@RequestParam("id") int id) {
+    @PostMapping("/updateUser")
+    public String updateUser(@ModelAttribute("user") User user) {
+        userService.updateUser(user);
+        return "redirect:/users";
+    }
+
+    @GetMapping("/removeUser")
+    public String removeUser(@RequestParam("id") long id) {
         userService.removeUser(id);
-        return "redirect:/";
+        return "redirect:/users";
     }
 
     @GetMapping("/updateUser")
-    public String getEditUserForm(Model model, @RequestParam("id") int id) {
+    public String getEditUserForm(Model model, @RequestParam("id") long id) {
         model.addAttribute("user", userService.getUser(id));
-        return "edit_user";
+        return "newUser";
     }
 
-    @PostMapping("/edit")
-    public String editUser(@ModelAttribute("user") User user) {
-        userService.updateUser(user);
-        return "redirect:/";
+    @GetMapping("/new")
+    public String CreateUserForm(@ModelAttribute("user") User user) {
+        return "saveUser";
     }
 }
