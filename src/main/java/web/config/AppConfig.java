@@ -32,17 +32,20 @@ public class AppConfig {
     private DataSource dataSource;
 
     @Bean
-    public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
-        LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
-        em.setDataSource(dataSource);
-        em.setPackagesToScan(env.getRequiredProperty("db.entity.package"));
-        em.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
-        Properties props = new Properties();
-        props.put("hibernate.show_sql", env.getProperty("hibernate.show_sql"));
-        props.put("hibernate.hbm2ddl.auto", env.getProperty("hibernate.hbm2ddl.auto"));
-        props.put("hibernate.dialect ", env.getProperty("hibernate.dialect"));
-        em.setJpaProperties(props);
-        return em;
+    public LocalContainerEntityManagerFactoryBean getEntityManagerFactory() {
+        LocalContainerEntityManagerFactoryBean entityManager = new LocalContainerEntityManagerFactoryBean();
+        entityManager.setDataSource(getDataSource());
+        entityManager.setPackagesToScan(env.getRequiredProperty("db.entity.package"));
+        entityManager.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
+        entityManager.setJpaProperties(getHibernateProperties());
+        return entityManager;
+    }
+
+    public Properties getHibernateProperties() {
+        Properties properties = new Properties();
+        properties.put("hibernate.show_sql", env.getRequiredProperty("hibernate.show_sql"));
+        properties.put("hibernate.hbm2ddl.auto", env.getRequiredProperty("hibernate.hbm2ddl.auto"));
+        return properties;
     }
 
     @Bean
@@ -57,8 +60,8 @@ public class AppConfig {
 
     @Bean
     public JpaTransactionManager transactionManager() {
-        JpaTransactionManager manager = new JpaTransactionManager();
-        manager.setEntityManagerFactory(entityManagerFactory().getObject());
-        return manager;
+        JpaTransactionManager TManager = new JpaTransactionManager();
+        TManager.setEntityManagerFactory(getEntityManagerFactory().getObject());
+        return TManager;
     }
 }

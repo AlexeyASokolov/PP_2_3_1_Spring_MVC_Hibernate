@@ -9,16 +9,16 @@ public class User {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    public long id;
 
     @Column(name = "name")
-    private String name;
+    public String name;
 
     @Column(name = "lastName")
-    private String lastName;
+    public String lastName;
 
     @Column(name = "age")
-    private byte age;
+    public byte age;
 
     public User() {
     }
